@@ -1,0 +1,3 @@
+kernel/samples/kprobes/kprobe_example.ko
+kernel/samples/kprobes/jprobe_example.ko
+kernel/samples/kprobes/kretprobe_example.ko

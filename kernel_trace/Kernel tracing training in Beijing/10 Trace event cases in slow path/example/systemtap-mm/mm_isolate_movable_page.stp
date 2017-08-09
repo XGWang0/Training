@@ -1,0 +1,15 @@
+%{
+#include <linux/mm.h>
+%}
+
+function dump_page (page:long) %{ 
+        struct page *p = (struct page *)((long)STAP_ARG_page);
+	dump_page (p, "isolation failed");
+%}
+
+probe kernel.function("isolate_lru_page").return {
+	if ($return != 0)
+		dump_page ($page)
+	else
+		printf("isolate_lru_page success\n");
+}

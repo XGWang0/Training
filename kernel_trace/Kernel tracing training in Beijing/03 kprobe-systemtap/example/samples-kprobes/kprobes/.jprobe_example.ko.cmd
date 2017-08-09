@@ -1,0 +1,1 @@
+cmd_samples/kprobes/jprobe_example.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o samples/kprobes/jprobe_example.ko samples/kprobes/jprobe_example.o samples/kprobes/jprobe_example.mod.o

@@ -1,0 +1,22 @@
+global wakeup_kswapd
+global kswapd_node 
+
+probe kernel.trace("mm_vmscan_wakeup_kswapd") {
+	if (@defined($nid) && !wakeup_kswapd[$nid]) {
+		wakeup_kswapd[$nid] = gettimeofday_us();
+		printf("mm_vmscan_wakeup_kswapd	node id: %d\n", $nid);
+	}
+}
+probe kernel.trace("mm_vmscan_kswapd_wake") {
+	if (@defined($nid) && !kswapd_node[$nid]) {
+		kswapd_node[$nid] = gettimeofday_us();
+		printf("mm_vmscan_kswapd_wake	node id: %d\n", $nid);
+	}
+}
+probe kernel.trace("mm_vmscan_kswapd_sleep") {
+	if (@defined($nid) && kswapd_node[$nid]) {
+                waked = gettimeofday_us() - kswapd_node[$nid]
+		printf("mm_vmscan_kswapd_sleep	node id: %d	wake up period: %d(us) %d(s)\n", $nid, waked, waked/1000000);
+		kswapd_node[$nid] = NULL;
+	}
+}

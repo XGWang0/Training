@@ -1,0 +1,27 @@
+global compact_result
+
+probe begin {
+	compact_result[0]="COMPACT_NOT_SUITABLE_ZONE"
+	compact_result[1]="COMPACT_SKIPPED"
+	compact_result[2]="COMPACT_DEFERRED"
+	compact_result[3]="COMPACT_NO_SUITABLE_PAGE"
+	compact_result[4]="COMPACT_CONTINUE"
+	compact_result[5]="COMPACT_COMPLETE"
+	compact_result[6]="COMPACT_PARTIAL_SKIPPED"
+	compact_result[7]="COMPACT_CONTENDED"
+	compact_result[8]="COMPACT_SUCCESS"
+}
+probe kernel.trace("mm_compaction_suitable") {
+	printf ("mm_compaction_suitable node: %d	order: %d	ret: %d (%s)\n",
+		$zone->node, $order, $ret, compact_result[$ret])
+}
+/* TP_ARGS(zone_start, migrate_pfn, free_pfn, zone_end, sync) */
+probe kernel.trace("mm_compaction_begin") {
+	printf ("mm_compaction_begin zone_start: %x, migrate_pfn: %x\n",
+		$zone_start, $migrate_pfn)
+}
+/* TP_ARGS(zone_start, migrate_pfn, free_pfn, zone_end, sync, status) */
+probe kernel.trace("mm_compaction_end") {
+	printf ("mm_compaction_begin zone_start: %x, migrate_pfn: %x, status: %d\n",
+		$zone_start, $migrate_pfn, $status)
+}

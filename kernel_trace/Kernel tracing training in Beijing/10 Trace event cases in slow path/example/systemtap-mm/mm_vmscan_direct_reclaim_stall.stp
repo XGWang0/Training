@@ -1,0 +1,12 @@
+global stall_entry 
+
+probe kernel.trace("mm_vmscan_direct_reclaim_begin") {
+        stall_entry[tid()] = gettimeofday_us()
+}
+probe kernel.trace("mm_vmscan_direct_reclaim_end") {
+        if (stall_entry[tid()]) {
+                stalled = gettimeofday_us() - stall_entry[tid()]
+                printf("thread: %-8d stall: %16d(us)\n", tid(), stalled)
+                stall_entry[tid()] = 0;
+        }
+}

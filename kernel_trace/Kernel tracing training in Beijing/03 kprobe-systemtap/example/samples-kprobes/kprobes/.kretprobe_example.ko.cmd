@@ -1,0 +1,1 @@
+cmd_samples/kprobes/kretprobe_example.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o samples/kprobes/kretprobe_example.ko samples/kprobes/kretprobe_example.o samples/kprobes/kretprobe_example.mod.o
